@@ -1,5 +1,6 @@
 from itertools import cycle
 
+
 def dict_creation():
     dictionary = {}
     missed_symbols = 0
@@ -29,11 +30,11 @@ def comparing_key_with_indexes(value, key):
 def final_encoding(value, key):
     dictionary = comparing_key_with_indexes(value, key)
     answer = []
-    l = len(dict_creation())
+    length = len(dict_creation())
 
     for v in dictionary.values():
-        sum = (v[0] + v[1]) % l
-        answer.append(sum)
+        temp_sum = (v[0] + v[1]) % length
+        answer.append(temp_sum)
     return answer
 
 
@@ -46,16 +47,17 @@ def start_decoding(word):
             decode.append(dictionary[symbol])
     return decode
 
+
 def final_decoding(value, key):
     dictionary = comparing_key_with_indexes(value, key)
     answer = []
-    d = dict_creation()
-    l = len(dict_creation())
+    length = len(dict_creation())
 
     for v in dictionary.values():
-        dif = (v[0] - v[1] + l) % l
+        dif = (v[0] - v[1] + length) % length
         answer.append(dif)
     return answer
+
 
 def vigenere_main(action, text, key):
     encoded_key = start_encoding(key)
@@ -63,11 +65,10 @@ def vigenere_main(action, text, key):
     encrypted_line = ""
     new_file = ""
     for line in text_list:
-
         cur_ind = 0
         while cur_ind < len(line):
             word = ""
-            if not ('a' <= line[cur_ind] <= 'z') and not('A' <= line[cur_ind] <= 'Z') :
+            if not ('a' <= line[cur_ind] <= 'z') and not('A' <= line[cur_ind] <= 'Z'):
                 cur_ind += 1
                 continue
             while cur_ind < len(line) and (('a' <= line[cur_ind] <= 'z') or ('A' <= line[cur_ind] <= 'Z')):

@@ -1,5 +1,6 @@
 import string
 
+
 def shift(n, shift_step, flag):
     if n not in string.ascii_letters:
         return n

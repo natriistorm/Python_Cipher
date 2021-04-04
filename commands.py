@@ -1,18 +1,15 @@
-
-# 1 - encrypt with Caesar
-# 2 - encrypt with Vigenere
-# 3 - encrypt with Vemar
-
 import sys
 import caesar
 import vigenere
+import vernam
 
 def choose_action(action, cipher, data, key_data):
     if cipher == 'Caesar':
         caesar.caesar_main(action, data, key_data)
     elif cipher == 'Vigenere':
         vigenere.vigenere_main(action, data, key_data)
-
+    elif cipher == 'Vernam':
+        vernam.vernam_main(action, data, key_data)
 
 
 def show_help():
