@@ -26,5 +26,4 @@ def caesar_main(action, text, key):
         new_file += encrypted_line
         new_file += "\n"
         encrypted_line = ""
-    for line in new_file.split("\n"):
-        print(line)
+    return new_file

@@ -10,10 +10,7 @@ def to_letters_or_numbers(action, answer):
             cur_bit = int(cur_word[l])
             position = int(l)
             decimal_number += (cur_bit * (2 ** (7 - position)))
-        if action == "Decrypt":
-            ans.append(chr(decimal_number))
-        else:
-            ans.append(decimal_number)
+        ans.append(chr(decimal_number + ord('A')))
         i += 8
     return ans
 
@@ -35,5 +32,5 @@ def vernam_main(action, text, key):
             continue
         temp = int(text_binary[i]) ^ int(key_binary[i])
         answer += str(temp)
-    ans = to_letters_or_numbers(action, answer)
+    ans = ''.join(to_letters_or_numbers(action, answer))
     return ans
