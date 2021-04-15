@@ -1,7 +1,9 @@
 from itertools import cycle
+import abstract_class
+import string
 
 
-def dict_creation():
+def dict_creation() -> dict:
     dictionary = {}
     missed_symbols = 0
     for i in range(60):
@@ -12,79 +14,96 @@ def dict_creation():
     return dictionary
 
 
-def start_encoding(word):
-    symbols_and_indexes = []
-    dictionary = dict_creation()
-    for symbol in word:
-        for key, value in dictionary.items():
-            if symbol == value:
-                symbols_and_indexes.append(key)
-    return symbols_and_indexes
-
-
-def comparing_key_with_indexes(value, key):
+def comparing_key_with_indexes(value: list, key: list) -> dict:
     return dict([(indexes, [ch[0], ch[1]])
-                for indexes, ch in enumerate(zip(value, cycle(key)))])
+                 for indexes, ch in enumerate(zip(value, cycle(key)))])
 
 
-def final_encoding(value, key):
-    dictionary = comparing_key_with_indexes(value, key)
-    answer = []
-    length = len(dict_creation())
-
-    for v in dictionary.values():
-        temp_sum = (v[0] + v[1]) % length
-        answer.append(temp_sum)
-    return answer
+def making_a_word(cur_ind: int, line: str) -> tuple:
+    word = ""
+    while cur_ind < len(line) and line[cur_ind] in string.ascii_letters:
+        word += line[cur_ind]
+        cur_ind += 1
+    return word, cur_ind
 
 
-def start_decoding(word):
-    decode = []
-    dictionary = dict_creation()
+class Vigenere(abstract_class.AbstractCipher):
+    shift_key = []
+    input_text = []
+    output_text = ""
+    dictionary_of_symbols = {}
 
-    for symbol in word:
-        if symbol in dictionary:
-            decode.append(dictionary[symbol])
-    return decode
+    def __init__(self, key: str, text: str):
+        self.dictionary_of_symbols = dict_creation()
+        self.shift_key = self.start_encoding(key)
+        self.input_text = text.split('\n')
+        self.output_text = ""
 
+    def start_encoding(self, word: str) -> list:
+        symbols_and_indexes = []
+        for symbol in word:
+            for key, value in self.dictionary_of_symbols.items():
+                if symbol == value:
+                    symbols_and_indexes.append(key)
+        return symbols_and_indexes
 
-def final_decoding(value, key):
-    dictionary = comparing_key_with_indexes(value, key)
-    answer = []
-    length = len(dict_creation())
+    def start_decoding(self, word: list) -> list:
+        decode = []
+        for symbol in word:
+            if symbol in self.dictionary_of_symbols:
+                decode.append(self.dictionary_of_symbols[symbol])
+        return decode
 
-    for v in dictionary.values():
-        dif = (v[0] - v[1] + length) % length
-        answer.append(dif)
-    return answer
+    def getting_final_result(self, value: list, key: list, action_flag: int) -> list:
+        dictionary = comparing_key_with_indexes(value, key)
+        answer = []
+        length = len(self.dictionary_of_symbols)
 
+        for v in dictionary.values():
+            if action_flag == 1:
+                temp_result = (v[0] + v[1]) % length
+            if action_flag == -1:
+                temp_result = (v[0] - v[1] + length) % length
+            answer.append(temp_result)
+        return answer
 
-def vigenere_main(action, text, key):
-    encoded_key = start_encoding(key)
-    text_list = text.split('\n')
-    encrypted_line = ""
-    new_file = ""
-    for line in text_list:
-        cur_ind = 0
-        while cur_ind < len(line):
-            word = ""
-            if not ('a' <= line[cur_ind] <= 'z') and not('A' <= line[cur_ind] <= 'Z'):
-                cur_ind += 1
-                continue
-            while cur_ind < len(line) and (('a' <= line[cur_ind] <= 'z') or ('A' <= line[cur_ind] <= 'Z')):
-                word += line[cur_ind]
-                cur_ind += 1
-            encoded_word = start_encoding(word)
-            encrypted_word = final_encoding(encoded_word, encoded_key)
-            if action == "Encrypt":
-                encrypted_line += ''.join(start_decoding(encrypted_word))
-                encrypted_line += ' '
-            elif action == "Decrypt":
-                decrypted_word = final_decoding(encoded_word, encoded_key)
-                decrypted_word_list = start_decoding(decrypted_word)
-                encrypted_line += ''.join(decrypted_word_list)
-                encrypted_line += ' '
-        new_file += encrypted_line
-        new_file += "\n"
-        encrypted_line = ""
-    return new_file
+    def encrypt(self):
+        worked_line = ""
+        for line in self.input_text:
+            cur_ind = 0
+            while cur_ind < len(line):
+                if not line[cur_ind] in string.ascii_letters:
+                    cur_ind += 1
+                    continue
+                word, cur_ind = making_a_word(cur_ind, line)
+                encoded_word = self.start_encoding(word)
+                encrypted_word = self.getting_final_result(encoded_word, self.shift_key, 1)
+                worked_line += ''.join(self.start_decoding(encrypted_word))
+                worked_line += ' '
+            self.output_text += worked_line
+            self.output_text += "\n"
+            worked_line = ""
+
+    def decrypt(self):
+        worked_line = ""
+        for line in self.input_text:
+            cur_ind = 0
+            while cur_ind < len(line):
+                if not line[cur_ind] in string.ascii_letters:
+                    cur_ind += 1
+                    continue
+                word, cur_ind = making_a_word(cur_ind, line)
+                encoded_word = self.start_encoding(word)
+                decrypted_word = self.getting_final_result(encoded_word, self.shift_key, -1)
+                decrypted_word_list = self.start_decoding(decrypted_word)
+                worked_line += ''.join(decrypted_word_list)
+                worked_line += ' '
+            self.output_text += worked_line
+            self.output_text += "\n"
+            worked_line = ""
+
+    def start(self, action: str) -> str:
+        if action == 'Encrypt':
+            self.encrypt()
+        if action == 'Decrypt':
+            self.decrypt()

@@ -1,36 +1,48 @@
-def to_letters_or_numbers(action, answer):
+import abstract_class
+
+
+def to_letters_or_numbers(answer: list) -> list:
     ans = []
-    i = 0
-    while i < len(answer):
-        cur_word = ""
-        decimal_number = 0
-        for j in range(i, i + 8):
-            cur_word += answer[j]
-        for l in range(len(cur_word)):
-            cur_bit = int(cur_word[l])
-            position = int(l)
-            decimal_number += (cur_bit * (2 ** (7 - position)))
-        ans.append(chr(decimal_number + ord('A')))
-        i += 8
+    for i in range(len(answer)):
+        ans.append(chr(answer[i] + ord('A')))
     return ans
 
 
-def vernam_main(action, text, key):
-    if len(key) != len(text):
-        print('Key text must the same length as the text')
-        return
-    text_binary = key_binary = ""
-    for line in text:
-        for sym in line:
-            text_binary += bin(ord(sym))
-    for line in key:
-        for sym in line:
-            key_binary += bin(ord(sym))
-    answer = ""
-    for i in range(len(text_binary)):
-        if text_binary[i] == 'b':
-            continue
-        temp = int(text_binary[i]) ^ int(key_binary[i])
-        answer += str(temp)
-    ans = ''.join(to_letters_or_numbers(action, answer))
-    return ans
+class Vernam(abstract_class.AbstractCipher):
+    binary_shift_key = []
+    binary_input_text = []
+    output_text = ""
+    dictionary_of_symbols = {}
+
+    def __init__(self, key: str, text: str):
+        self.binary_shift_key = bytes(key, encoding='utf-8')
+        self.binary_input_text = bytes(text, encoding='utf-8')
+        self.output_text = ""
+
+    def crypt(self) -> list:
+        answer = []
+        for i in range(len(self.binary_input_text)):
+            if self.binary_input_text[i] == 'b':
+                continue
+            temp = int(self.binary_input_text[i]) ^ int(self.binary_shift_key[i])
+            answer.append(temp)
+        return answer
+
+    def encrypt(self) -> str:
+        answer = self.crypt()
+        answer_str = ''.join(to_letters_or_numbers(answer))
+        return answer_str
+
+    def decrypt(self) -> str:
+        answer = self.crypt()
+        answer_str = ''.join(to_letters_or_numbers(answer))
+        return answer_str
+
+    def start(self, action: str):
+        if len(self.binary_shift_key) != len(self.binary_input_text):
+            print('Key text must the same length as the text')
+            return
+        if action == 'Encrypt':
+            self.encrypt()
+        if action == 'Decrypt':
+            self.decrypt()

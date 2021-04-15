@@ -1,29 +1,47 @@
+import abstract_class
 import string
 
 
-def shift(n, shift_step, flag):
-    if n not in string.ascii_letters:
-        return n
-    if n.isupper():
-        new_symbol = chr(ord('A') + (ord(n) - ord('A') + (flag * shift_step)) % 26)
-        return new_symbol
-    if n.islower():
-        new_symbol = chr(ord('a') + (ord(n) - ord('a') + (flag * shift_step)) % 26)
-        return new_symbol
+class Caesar(abstract_class.AbstractCipher):
+    shift_key = 1
+    input_text = []
+    output_text = ""
 
+    def __init__(self, key: str, text: str):
+        self.shift_key = int(key)
+        self.input_text = text.split('\n')
+        self.output_text = ""
 
-def caesar_main(action, text, key):
-    text_list = text.split('\n')
-    n = int(key)
-    encrypted_line = ""
-    new_file = ""
-    for line in text_list:
-        for sym in line:
-            if action == 'Encrypt':
-                encrypted_line += shift(sym, n, 1)
-            elif action == 'Decrypt':
-                encrypted_line += shift(sym, n, -1)
-        new_file += encrypted_line
-        new_file += "\n"
+    def shift(self, n: str, flag: int) -> str:
+        if n not in string.ascii_letters:
+            return n
+        if n.isupper():
+            new_symbol = chr(ord('A') + (ord(n) - ord('A') + (flag * self.shift_key)) % 26)
+            return new_symbol
+        if n.islower():
+            new_symbol = chr(ord('a') + (ord(n) - ord('a') + (flag * self.shift_key)) % 26)
+            return new_symbol
+
+    def encrypt(self):
         encrypted_line = ""
-    return new_file
+        for line in self.input_text:
+            for sym in line:
+                encrypted_line += self.shift(sym, 1)
+            self.output_text += encrypted_line
+            self.output_text += "\n"
+            encrypted_line = ""
+
+    def decrypt(self):
+        encrypted_line = ""
+        for line in self.input_text:
+            for sym in line:
+                encrypted_line += self.shift(sym, -1)
+            self.output_text += encrypted_line
+            self.output_text += "\n"
+            encrypted_line = ""
+
+    def start(self, action: str):
+        if action == 'Encrypt':
+            self.encrypt()
+        if action == 'Decrypt':
+            self.decrypt()
