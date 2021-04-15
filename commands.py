@@ -21,6 +21,11 @@ def main():
         cipher.encrypt()
     elif args.action == "Decrypt":
         cipher.decrypt()
+    if args.action == "Hack":
+        if args.cipher == "Caesar":
+            cipher.hack("json_text.txt")
+        else:
+            raise ValueError("Only Caesar cipher can be hacked!")
     text_work.user_output(cipher.output_text, args.output)
 
 

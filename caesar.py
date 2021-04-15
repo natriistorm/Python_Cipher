@@ -1,5 +1,7 @@
 import abstract_class
 import string
+import json
+import getting_stat
 
 
 class Caesar(abstract_class.AbstractCipher):
@@ -40,8 +42,17 @@ class Caesar(abstract_class.AbstractCipher):
             self.output_text += "\n"
             encrypted_line = ""
 
-    def start(self, action: str):
-        if action == 'Encrypt':
-            self.encrypt()
-        if action == 'Decrypt':
-            self.decrypt()
+    def hack(self, model_file):
+        alphabet = string.ascii_lowercase
+        current_stat = getting_stat.get_stat(self.input_text)
+        with open(model_file, "r") as f:
+            true_stat = json.load(f)
+        best_k = 0
+        best_distance = -1
+        for k in range(1, len(alphabet)):
+            distance = getting_stat.find_model_distance(k, current_stat, true_stat)
+            if distance < best_distance or best_distance == -1:
+                best_distance = distance
+                best_k = k
+        self.shift_key = best_k
+        self.decrypt()
