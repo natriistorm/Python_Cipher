@@ -22,26 +22,21 @@ class Vernam(abstract_class.AbstractCipher):
     def crypt(self) -> list:
         answer = []
         for i in range(len(self.binary_input_text)):
-            if self.binary_input_text[i] == 'b':
-                continue
             temp = int(self.binary_input_text[i]) ^ int(self.binary_shift_key[i])
             answer.append(temp)
         return answer
 
     def encrypt(self) -> str:
         answer = self.crypt()
-        answer_str = ''.join(to_letters_or_numbers(answer))
-        return answer_str
+        self.output_text = ''.join(to_letters_or_numbers(answer))
 
     def decrypt(self) -> str:
         answer = self.crypt()
-        answer_str = ''.join(to_letters_or_numbers(answer))
-        return answer_str
+        self.output_text = ''.join(to_letters_or_numbers(answer))
 
     def start(self, action: str):
         if len(self.binary_shift_key) != len(self.binary_input_text):
-            print('Key text must the same length as the text')
-            return
+            raise ValueError('Key text must the same length as the text')
         if action == 'Encrypt':
             self.encrypt()
         if action == 'Decrypt':
