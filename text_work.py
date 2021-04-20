@@ -4,15 +4,14 @@ import sys
 def user_input(file=None):
     if file is None:
         text = sys.stdin.read()
-        return text
+        return text.lower()
     with open(file, 'r') as f:
-        return f.read()
+        return f.read().lower()
 
 
 def user_output(text, file=None):
     if file is None:
-        for line in text.split("\n"):
-            print(line)
+        print(text)
     else:
         with open(file, 'w') as f:
             return f.write(text)
