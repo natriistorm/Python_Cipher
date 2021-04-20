@@ -74,9 +74,9 @@ class Vigenere(abstract_class.AbstractCipher):
                 word, cur_ind = making_a_word(cur_ind, line)
                 encoded_word = self.start_encoding(word)
                 encrypted_word = self.getting_final_result(encoded_word, self.shift_key, 1)
-                worked_line += ''.join(self.start_decoding(encrypted_word))
-                worked_line += ' '
-            self.output_text += worked_line
+                worked_line += ''.join(self.start_decoding(encrypted_word)) + ' '
+            worked_line = worked_line[:-1]
+            self.output_text += worked_line + '\n'
 
     def decrypt(self):
         for line in self.input_text:
@@ -90,6 +90,6 @@ class Vigenere(abstract_class.AbstractCipher):
                 encoded_word = self.start_encoding(word)
                 decrypted_word = self.getting_final_result(encoded_word, self.shift_key, -1)
                 decrypted_word_list = self.start_decoding(decrypted_word)
-                worked_line += ''.join(decrypted_word_list)
-                worked_line += ' '
-            self.output_text += worked_line
+                worked_line += ''.join(decrypted_word_list) + ' '
+            worked_line = worked_line[:-1]
+            self.output_text += worked_line + '\n'
