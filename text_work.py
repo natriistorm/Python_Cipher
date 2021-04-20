@@ -4,9 +4,9 @@ import sys
 def user_input(file=None):
     if file is None:
         text = sys.stdin.read()
-        return text.lower()
+        return text
     with open(file, 'r') as f:
-        return f.read().lower()
+        return f.read()
 
 
 def user_output(text, file=None):
