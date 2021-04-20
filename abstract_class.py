@@ -9,4 +9,9 @@ class AbstractCipher(ABC):
         pass
 
     def start(self, action: str):
-        pass
+        if action == 'Encrypt':
+            self.encrypt()
+        if action == 'Decrypt':
+            self.decrypt()
+        if action == 'Hack':
+            self.hack()
