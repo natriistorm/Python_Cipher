@@ -12,25 +12,23 @@ def main():
     keydata = text_work.user_input(args.key_file)
     data = text_work.user_input(args.input)
     cipher = abstract_class.AbstractCipher
-    if args.cipher == "Caesar":
-        cipher = caesar.Caesar(keydata, data)
-    elif args.cipher == "Vigenere":
-        cipher = vigenere.Vigenere(keydata, data)
-    elif args.cipher == "Vernam":
-        cipher = vernam.Vernam(keydata, data)
-    if args.action != "Train":
-        if args.action == "Encrypt":
-            cipher.encrypt()
-        elif args.action == "Decrypt":
-            cipher.decrypt()
-        elif args.action == "Hack":
-            if args.cipher == "Caesar":
-                cipher.hack("text.json")
-            else:
-                raise ValueError("Only Caesar cipher can be hacked!")
-        text_work.user_output(cipher.output_text, args.output)
-    else:
+
+    if args.action == "Hack":
+        if args.cipher == "Caesar":
+            cipher.hack("text.json")
+        else:
+            raise ValueError("Only Caesar cipher can be hacked!")
+
+    if args.action == "Train":
         trainer.train(data, args.output)
+    else:
+        if args.cipher == "Caesar":
+            cipher = caesar.Caesar(keydata, data, args.action)
+        elif args.cipher == "Vigenere":
+            cipher = vigenere.Vigenere(keydata, data, args.action)
+        elif args.cipher == "Vernam":
+            cipher = vernam.Vernam(keydata, data, args.action)
+        text_work.user_output(cipher.output_text, args.output)
 
 
 if __name__ == "__main__":
