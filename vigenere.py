@@ -7,7 +7,7 @@ def dict_creation() -> dict:
     dictionary = {}
     missed_symbols = 0
     for i in range(60):
-        if (ord('A') <= i + 65 <= ord('Z')) or (ord('a') <= i + 65 <= ord('z')):
+        if chr(i + 65) in string.ascii_letters:
             dictionary[i - missed_symbols] = chr(i + 65)
         else:
             missed_symbols += 1
@@ -28,16 +28,12 @@ def making_a_word(cur_ind: int, line: str) -> tuple:
 
 
 class Vigenere(abstract_class.AbstractCipher):
-    shift_key = []
-    input_text = []
-    output_text = ""
-    dictionary_of_symbols = {}
-
-    def __init__(self, key: str, text: str):
+    def __init__(self, key: str, text: str, action: str):
         self.dictionary_of_symbols = dict_creation()
         self.shift_key = self.start_encoding(key)
         self.input_text = text.split('\n')
         self.output_text = ""
+        self.start(action)
 
     def start_encoding(self, word: str) -> list:
         symbols_and_indexes = []
@@ -68,8 +64,8 @@ class Vigenere(abstract_class.AbstractCipher):
         return answer
 
     def encrypt(self):
-        worked_line = ""
         for line in self.input_text:
+            worked_line = ""
             cur_ind = 0
             while cur_ind < len(line):
                 if not line[cur_ind] in string.ascii_letters:
@@ -81,12 +77,10 @@ class Vigenere(abstract_class.AbstractCipher):
                 worked_line += ''.join(self.start_decoding(encrypted_word))
                 worked_line += ' '
             self.output_text += worked_line
-            self.output_text += "\n"
-            worked_line = ""
 
     def decrypt(self):
-        worked_line = ""
         for line in self.input_text:
+            worked_line = ""
             cur_ind = 0
             while cur_ind < len(line):
                 if not line[cur_ind] in string.ascii_letters:
@@ -99,11 +93,3 @@ class Vigenere(abstract_class.AbstractCipher):
                 worked_line += ''.join(decrypted_word_list)
                 worked_line += ' '
             self.output_text += worked_line
-            self.output_text += "\n"
-            worked_line = ""
-
-    def start(self, action: str) -> str:
-        if action == 'Encrypt':
-            self.encrypt()
-        if action == 'Decrypt':
-            self.decrypt()

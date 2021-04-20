@@ -5,14 +5,11 @@ import getting_stat
 
 
 class Caesar(abstract_class.AbstractCipher):
-    shift_key = 1
-    input_text = []
-    output_text = ""
-
-    def __init__(self, key: str, text: str):
+    def __init__(self, key: str, text: str, action: str):
         self.shift_key = int(key)
         self.input_text = text.split('\n')
         self.output_text = ""
+        self.start(action)
 
     def shift(self, n: str, flag: int) -> str:
         if n not in string.ascii_letters:

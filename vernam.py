@@ -9,15 +9,13 @@ def to_letters_or_numbers(answer: list) -> list:
 
 
 class Vernam(abstract_class.AbstractCipher):
-    binary_shift_key = []
-    binary_input_text = []
-    output_text = ""
-    dictionary_of_symbols = {}
-
-    def __init__(self, key: str, text: str):
+    def __init__(self, key: str, text: str, action: str):
         self.binary_shift_key = bytes(key, encoding='utf-8')
         self.binary_input_text = bytes(text, encoding='utf-8')
         self.output_text = ""
+        if len(self.binary_shift_key) != len(self.binary_input_text):
+            raise ValueError('Key text must the same length as the text')
+        self.start(action)
 
     def crypt(self) -> list:
         answer = []
@@ -33,11 +31,3 @@ class Vernam(abstract_class.AbstractCipher):
     def decrypt(self) -> str:
         answer = self.crypt()
         self.output_text = ''.join(to_letters_or_numbers(answer))
-
-    def start(self, action: str):
-        if len(self.binary_shift_key) != len(self.binary_input_text):
-            raise ValueError('Key text must the same length as the text')
-        if action == 'Encrypt':
-            self.encrypt()
-        if action == 'Decrypt':
-            self.decrypt()
